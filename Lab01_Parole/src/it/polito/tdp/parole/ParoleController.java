@@ -4,7 +4,6 @@ package it.polito.tdp.parole;
  * Sample Skeleton for 'Parole.fxml' Controller Class
  */
 
-
 import it.polito.tdp.parole.model.Parole;
 
 import java.net.URL;
@@ -17,44 +16,86 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class ParoleController {
+
+	Parole elenco;
+
+	@FXML // ResourceBundle that was given to the FXMLLoader
+	private ResourceBundle resources;
+
+	@FXML // URL location of the FXML file that was given to the FXMLLoader
+	private URL location;
+
+	@FXML // fx:id="txtParola"
+	private TextField txtParola; // Value injected by FXMLLoader
+
+	@FXML // fx:id="txtResult"
+	private TextArea txtResult; // Value injected by FXMLLoader
+
+	@FXML
+	private Button btnReset;
+
+	@FXML // fx:id="btnInserisci"
+	private Button btnInserisci; // Value injected by FXMLLoader
+
+	@FXML
+	private Button btnCancella;
 	
-	Parole elenco ;
+	@FXML
+	private TextField txtExe;
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
+	@FXML
+	void doInsert(ActionEvent event) {
+		String parola = txtParola.getText();
+		elenco.addParola(parola);
 
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
+		String sb = new String();
+		for (String s : elenco.getElenco()) {
+			sb += (s + "\n");
+		}
+		this.txtResult.setText(sb);
+		txtParola.clear();
+		
+		
+		long startTime = System.nanoTime();    
+		// ... the code being measured ...    
+		//long estimatedTime = System.nanoTime() - startTime;
+		txtExe.setText(String.format("%d", System.nanoTime() - startTime));
 
-    @FXML // fx:id="txtParola"
-    private TextField txtParola; // Value injected by FXMLLoader
+	}
 
-    @FXML // fx:id="txtResult"
-    private TextArea txtResult; // Value injected by FXMLLoader
-    
-    @FXML
-    private Button btnReset;
+	@FXML
+	void doReset(ActionEvent event) {
+		elenco.reset();
+		txtResult.clear();
+		txtParola.clear();
+		
+		long startTime = System.nanoTime();    
+		txtExe.setText(String.format("%d", System.nanoTime() - startTime));
+	}
 
-    @FXML // fx:id="btnInserisci"
-    private Button btnInserisci; // Value injected by FXMLLoader
+	@FXML
+	void doCanc(ActionEvent event) {
+		String selected = "";
+		if (this.elenco.getElenco().contains(txtParola.getText())) {
+			selected = txtParola.getText();
+			elenco.cancella(selected);
+			txtParola.clear();
+			txtResult.setText(txtResult.getText().replace(selected, "").trim());
+				
+		}
+		
+		long startTime = System.nanoTime();    
+		txtExe.setText(String.format("%d", System.nanoTime() - startTime));
 
-    @FXML
-    void doInsert(ActionEvent event) {
-    	// TODO
-    }
-    
-    @FXML
-    void doReset(ActionEvent event) {
-    	// TODO
-    }
+	}
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
-        assert txtParola != null : "fx:id=\"txtParola\" was not injected: check your FXML file 'Parole.fxml'.";
-        assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Parole.fxml'.";
-        assert btnInserisci != null : "fx:id=\"btnInserisci\" was not injected: check your FXML file 'Parole.fxml'.";
+	@FXML // This method is called by the FXMLLoader when initialization is complete
+	void initialize() {
+		assert txtParola != null : "fx:id=\"txtParola\" was not injected: check your FXML file 'Parole.fxml'.";
+		assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Parole.fxml'.";
+		assert btnInserisci != null : "fx:id=\"btnInserisci\" was not injected: check your FXML file 'Parole.fxml'.";
 
-        elenco = new Parole() ;
-        
-    }
+		elenco = new Parole();
+
+	}
 }
